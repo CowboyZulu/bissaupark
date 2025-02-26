@@ -32,4 +32,13 @@ export interface Vehicle {
     updated_at: string;
     category?: VehicleCategory;
     driver?: Driver;
+}
+
+export interface ViolationType {
+    id: number;
+    name: string;
+    code: string;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
 } 

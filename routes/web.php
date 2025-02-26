@@ -9,6 +9,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\VehicleCategoryController;
+use App\Http\Controllers\ViolationTypeController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -40,6 +41,9 @@ Route::middleware(['auth'])->group(function () {
     
     // Vehicle Category Management Routes
     Route::resource('vehicle-categories', VehicleCategoryController::class);
+    
+    // Violation Type Management Routes
+    Route::resource('violation-types', ViolationTypeController::class);
 });
 
 require __DIR__.'/settings.php';
