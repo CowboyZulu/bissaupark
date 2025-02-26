@@ -11,7 +11,7 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Car, Folder, LayoutGrid, Map, Menu, Search, TriangleAlert, Users } from 'lucide-react';
+import { BookOpen, Car, Folder, LayoutGrid, Map, Menu, ParkingSquare, Search, TriangleAlert, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
@@ -56,7 +56,16 @@ const mainNavItems: NavItem[] = [
         url: '/zones',
         icon: Map,
     },
-
+    {
+        title: 'Streets',
+        url: '/streets',
+        icon: Map,
+    },
+    {
+        title: 'Parking Spaces',
+        url: '/parking-spaces',
+        icon: ParkingSquare,
+    },
 ];
 
 const rightNavItems: NavItem[] = [

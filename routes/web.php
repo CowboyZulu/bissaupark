@@ -11,6 +11,8 @@ use App\Http\Controllers\DriverController;
 use App\Http\Controllers\VehicleCategoryController;
 use App\Http\Controllers\ViolationTypeController;
 use App\Http\Controllers\ZonesController;
+use App\Http\Controllers\StreetController;
+use App\Http\Controllers\ParkingSpaceController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -48,6 +50,12 @@ Route::middleware(['auth'])->group(function () {
     
     // Zones Management Routes
     Route::resource('zones', ZonesController::class);
+    
+    // Streets Management Routes
+    Route::resource('streets', StreetController::class);
+    
+    // Parking Spaces Management Routes
+    Route::resource('parking-spaces', ParkingSpaceController::class);
 });
 
 require __DIR__.'/settings.php';

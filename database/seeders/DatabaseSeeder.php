@@ -9,6 +9,8 @@ use Database\Seeders\VehicleCategorySeeder;
 use Database\Seeders\ViolationTypeSeeder;
 use Database\Seeders\ZonesSeeder;
 use Database\Seeders\ZonesPermissionSeeder;
+use Database\Seeders\StreetSeeder;
+use Database\Seeders\ParkingSpaceSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -26,6 +28,8 @@ class DatabaseSeeder extends Seeder
             ViolationTypeSeeder::class,
             ZonesSeeder::class,
             ZonesPermissionSeeder::class,
+            StreetSeeder::class,
+            ParkingSpaceSeeder::class,
         ]);
 
         // User::factory(10)->create();
