@@ -5,6 +5,13 @@ export interface Role {
     description: string | null;
 }
 
+export interface Permission {
+    id: number;
+    name: string;
+    slug: string;
+    description: string | null;
+}
+
 export interface User {
     id: number;
     name: string;

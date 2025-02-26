@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\VehicleCategorySeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,7 +17,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            PermissionSeeder::class,
             RoleSeeder::class,
+            VehicleCategorySeeder::class,
         ]);
 
         // User::factory(10)->create();

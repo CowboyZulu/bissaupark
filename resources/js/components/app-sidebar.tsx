@@ -18,6 +18,12 @@ const mainNavItems: NavItem[] = [
         url: '/users',
         icon: Users,
     },
+    {
+        title: 'Roles',
+        url: '/roles',
+        icon: Users,
+    },
+    
 ];
 
 const footerNavItems: NavItem[] = [
