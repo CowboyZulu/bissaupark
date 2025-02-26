@@ -41,6 +41,11 @@ class PermissionSeeder extends Seeder
                 'slug' => 'export-data',
                 'description' => 'Can export data',
             ],
+            [
+                'name' => 'Manage Zones',
+                'slug' => 'manage-zones',
+                'description' => 'Can create, edit, and delete zones',
+            ],
         ];
 
         foreach ($permissions as $permission) {

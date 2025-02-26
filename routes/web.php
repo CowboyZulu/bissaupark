@@ -10,6 +10,7 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\VehicleCategoryController;
 use App\Http\Controllers\ViolationTypeController;
+use App\Http\Controllers\ZonesController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -44,6 +45,9 @@ Route::middleware(['auth'])->group(function () {
     
     // Violation Type Management Routes
     Route::resource('violation-types', ViolationTypeController::class);
+    
+    // Zones Management Routes
+    Route::resource('zones', ZonesController::class);
 });
 
 require __DIR__.'/settings.php';

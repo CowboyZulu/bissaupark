@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Role;
+use App\Models\Permission;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -29,7 +30,13 @@ class RoleSeeder extends Seeder
         ];
 
         foreach ($roles as $role) {
-            Role::create($role);
+            $createdRole = Role::create($role);
+            
+            // Assign all permissions to the Administrator role
+            if ($role['slug'] === 'admin') {
+                $permissions = Permission::all();
+                $createdRole->permissions()->attach($permissions->pluck('id')->toArray());
+            }
         }
     }
 }

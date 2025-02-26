@@ -7,6 +7,8 @@ use Database\Seeders\RoleSeeder;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\VehicleCategorySeeder;
 use Database\Seeders\ViolationTypeSeeder;
+use Database\Seeders\ZonesSeeder;
+use Database\Seeders\ZonesPermissionSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -22,6 +24,8 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             VehicleCategorySeeder::class,
             ViolationTypeSeeder::class,
+            ZonesSeeder::class,
+            ZonesPermissionSeeder::class,
         ]);
 
         // User::factory(10)->create();
