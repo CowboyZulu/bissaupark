@@ -6,9 +6,9 @@ import { type BreadcrumbItem } from '@/types';
 
 export default function AppSidebarLayout({ children, breadcrumbs = [] }: { children: React.ReactNode; breadcrumbs?: BreadcrumbItem[] }) {
     return (
-        <AppShell variant="sidebar">
+        <AppShell variant="sidebar" className="w-full">
             <AppSidebar /> 
-            <AppContent variant="sidebar">
+            <AppContent variant="sidebar" className="w-full">
                 <AppSidebarHeader breadcrumbs={breadcrumbs} />
                 {children}
             </AppContent>

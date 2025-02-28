@@ -35,8 +35,8 @@ export function AppShell({ children, className, variant = 'header', ...props }: 
             <SidebarProvider defaultOpen={isOpen} open={isOpen} onOpenChange={handleSidebarChange}>
                 <div
                     className={cn(
-                        'flex min-h-screen flex-col',
-                        variant === 'sidebar' && 'flex-row',
+                        'flex min-h-screen w-full flex-col',
+                        variant === 'sidebar' && 'flex-row w-full',
                         className,
                     )}
                     {...props}

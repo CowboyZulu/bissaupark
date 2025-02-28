@@ -10,9 +10,9 @@ export function AppContent({ variant = 'header', children, ...props }: AppConten
 		return <SidebarInset {...props}>{children}</SidebarInset>;
 	}
 
-    return (
-        <main className="mx-auto flex h-full w-full max-w-7xl flex-1 flex-col gap-4 rounded-xl" {...props}>
-            {children}
-        </main>
-    );
+	return (
+		<main className="mx-auto flex h-full w-full max-w-full flex-1 flex-col gap-4 rounded-xl p-4" {...props}>
+			{children}
+		</main>
+	);
 }
