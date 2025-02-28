@@ -1,15 +1,23 @@
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type Zone } from '@/types/vehicle';
-import { Head, Link, router } from '@inertiajs/react';
-import { Edit, Plus, Trash } from 'lucide-react';
+import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { DataTable } from '@/components/ui/data-table';
+import { createZoneColumns } from '@/utils/table-utils';
 
 interface Props {
-    zones: Zone[];
+    zones: {
+        data: Zone[];
+        links: any[];
+        from: number;
+        to: number;
+        total: number;
+        current_page: number;
+        last_page: number;
+    };
 }
 
 export default function Index({ zones }: Props) {
@@ -59,6 +67,14 @@ export default function Index({ zones }: Props) {
         });
     };
 
+    const isProcessing = (id: number) => processing === id;
+
+    const columns = createZoneColumns(handleToggleStatus, handleDelete, isProcessing);
+
+    const handlePageChange = (page: number) => {
+        router.visit(route('zones.index', { page }));
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Zones" />
@@ -66,69 +82,37 @@ export default function Index({ zones }: Props) {
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="flex justify-between items-center">
                     <h1 className="text-2xl font-semibold">Zones</h1>
-                    <Link href={route('zones.create')}>
-                        <Button className="flex items-center gap-1">
-                            <Plus className="h-4 w-4" />
-                            Add Zone
-                        </Button>
-                    </Link>
                 </div>
 
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative flex-1 rounded-xl border">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left text-sm">
-                            <thead className="bg-muted/50 text-muted-foreground border-b">
-                                <tr>
-                                    <th className="px-4 py-3 font-medium">Name</th>
-                                    <th className="px-4 py-3 font-medium">Code</th>
-                                    <th className="px-4 py-3 font-medium">Status</th>
-                                    <th className="px-4 py-3 font-medium text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {zones.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={4} className="px-4 py-3 text-center text-muted-foreground">
-                                            No zones found
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    zones.map((zone) => (
-                                        <tr key={zone.id} className="border-b">
-                                            <td className="px-4 py-3">{zone.name}</td>
-                                            <td className="px-4 py-3">
-                                                <code className="bg-muted rounded px-1 py-0.5">{zone.code}</code>
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <Switch
-                                                    checked={zone.is_active}
-                                                    onCheckedChange={() => handleToggleStatus(zone)}
-                                                    disabled={processing === zone.id}
-                                                />
-                                            </td>
-                                            <td className="px-4 py-3 text-right">
-                                                <div className="flex justify-end gap-2">
-                                                    <Link href={route('zones.edit', zone.id)}>
-                                                        <Button variant="outline" size="icon" className="h-8 w-8">
-                                                            <Edit className="h-4 w-4" />
-                                                        </Button>
-                                                    </Link>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="icon"
-                                                        className="h-8 w-8 text-destructive"
-                                                        onClick={() => handleDelete(zone.id)}
-                                                        disabled={processing === zone.id}
-                                                    >
-                                                        <Trash className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
+                    <div className="p-4">
+                        <DataTable
+                            columns={columns}
+                            data={zones.data}
+                            searchKey="name"
+                            searchPlaceholder="Filter zones..."
+                            createRoute={route('zones.create')}
+                            createButtonLabel="Add Zone"
+                            pagination={{
+                                pageCount: zones.last_page,
+                                pageIndex: zones.current_page - 1,
+                                pageSize: zones.data.length,
+                                total: zones.total,
+                                from: zones.from,
+                                to: zones.to,
+                                links: zones.links,
+                                onPageChange: handlePageChange
+                            }}
+                            statusOptions={{
+                                key: "is_active",
+                                options: [
+                                    { label: "All", value: null },
+                                    { label: "Active", value: "Active" },
+                                    { label: "Inactive", value: "Inactive" }
+                                ]
+                            }}
+                            emptyMessage="No zones found"
+                        />
                     </div>
                 </div>
             </div>

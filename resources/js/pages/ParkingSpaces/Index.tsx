@@ -1,22 +1,11 @@
 import React, { useState } from 'react';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { Button } from '@/components/ui/button';
-import {
-	Pagination,
-	PaginationContent,
-	PaginationItem,
-	PaginationLink,
-	PaginationNext,
-	PaginationPrevious,
-	PaginationEllipsis
-} from '@/components/ui/pagination';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Pencil, Eye, Trash2, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import { BreadcrumbItem } from '@/types';
 import { Street } from '@/types/vehicle';
+import { DataTable } from '@/components/ui/data-table';
+import { createParkingSpaceColumns } from '@/utils/table-utils';
 
 // Define ParkingSpace interface locally to fix the import error
 interface ParkingSpace {
@@ -76,118 +65,11 @@ export default function Index({ parkingSpaces }: ParkingSpacesIndexProps) {
 		}
 	};
 
-	const getTypeLabel = (type: string) => {
-		switch (type) {
-			case 'parallel':
-				return 'Parallel';
-			case 'perpendicular':
-				return 'Perpendicular';
-			case 'angled':
-				return 'Angled';
-			default:
-				return type;
-		}
-	};
+	const columns = createParkingSpaceColumns(handleDelete);
 
-	// Helper function to render pagination links
-	const renderPaginationLinks = () => {
-		// Check if we have pagination data
-		if (!parkingSpaces.links || parkingSpaces.links.length <= 3) return null;
-		
-		// Make sure we have current_page and last_page
-		const currentPage = parkingSpaces.current_page || parseInt(parkingSpaces.links.find(link => link.active)?.label || '1');
-		const lastPage = parkingSpaces.last_page || parkingSpaces.links.length - 2;
-		
-		// Determine which page numbers to show
-		let pagesToShow = [];
-		
-		// Always show first page, last page, current page, and pages adjacent to current
-		if (lastPage <= 5) {
-			// If 5 or fewer pages, show all
-			pagesToShow = Array.from({ length: lastPage }, (_, i) => i + 1);
-		} else {
-			// Always include page 1
-			pagesToShow.push(1);
-			
-			// Add ellipsis if needed before middle pages
-			if (currentPage > 3) {
-				pagesToShow.push(-1); // -1 represents ellipsis
-			}
-			
-			// Add pages around current page
-			for (let i = Math.max(2, currentPage - 1); i <= Math.min(lastPage - 1, currentPage + 1); i++) {
-				pagesToShow.push(i);
-			}
-			
-			// Add ellipsis if needed after middle pages
-			if (currentPage < lastPage - 2) {
-				pagesToShow.push(-2); // -2 represents ellipsis
-			}
-			
-			// Always include last page if not already included
-			if (lastPage > 1) {
-				pagesToShow.push(lastPage);
-			}
-		}
-		
-		return (
-			<Pagination>
-				<PaginationContent>
-					{/* Previous Page Link */}
-					<PaginationItem>
-						<PaginationPrevious 
-							href={parkingSpaces.links[0].url || '#'} 
-							className={!parkingSpaces.links[0].url ? 'pointer-events-none opacity-50' : ''}
-						/>
-					</PaginationItem>
-					
-					{/* Page Number Links */}
-					{pagesToShow.map((page, index) => {
-						if (page < 0) {
-							// Render ellipsis
-							return (
-								<PaginationItem key={`ellipsis-${index}`}>
-									<PaginationEllipsis />
-								</PaginationItem>
-							);
-						}
-						
-						// Find the corresponding link in the links array
-						const pageLink = parkingSpaces.links.find(link => 
-							link.label === page.toString() || 
-							link.label === page.toString()
-						);
-						
-						return (
-							<PaginationItem key={page}>
-								<PaginationLink 
-									href={pageLink?.url || `?page=${page}`}
-									isActive={currentPage === page}
-								>
-									{page}
-								</PaginationLink>
-							</PaginationItem>
-						);
-					})}
-					
-					{/* Next Page Link */}
-					<PaginationItem>
-						<PaginationNext 
-							href={parkingSpaces.links[parkingSpaces.links.length - 1].url || '#'} 
-							className={!parkingSpaces.links[parkingSpaces.links.length - 1].url ? 'pointer-events-none opacity-50' : ''}
-						/>
-					</PaginationItem>
-				</PaginationContent>
-			</Pagination>
-		);
+	const handlePageChange = (page: number) => {
+		router.visit(route('parking-spaces.index', { page }));
 	};
-
-	// For debugging - log the pagination data
-	console.log('Pagination Data:', {
-		links: parkingSpaces.links,
-		current_page: parkingSpaces.current_page,
-		last_page: parkingSpaces.last_page
-	});
 
 	return (
 		<AppLayout breadcrumbs={breadcrumbs}>
@@ -196,127 +78,37 @@ export default function Index({ parkingSpaces }: ParkingSpacesIndexProps) {
 			<div className="flex h-full flex-1 flex-col gap-4 p-4">
 				<div className="flex justify-between items-center">
 					<h1 className="text-2xl font-semibold">Parking Spaces</h1>
-					<Button asChild>
-						<Link href={route('parking-spaces.create')}>
-							<Plus className="mr-2 h-4 w-4" />
-							Add Parking Space
-						</Link>
-					</Button>
 				</div>
 
 				<div className="border-sidebar-border/70 dark:border-sidebar-border relative flex-1 rounded-xl border">
 					<div className="p-4">
-						<div className="overflow-x-auto">
-							<Table>
-								<TableHeader>
-									<TableRow>
-										<TableHead>Space Number</TableHead>
-										<TableHead>Street</TableHead>
-										<TableHead>Type</TableHead>
-										<TableHead>Status</TableHead>
-										<TableHead>Special</TableHead>
-										<TableHead className="text-right">Actions</TableHead>
-									</TableRow>
-								</TableHeader>
-								<TableBody>
-									{parkingSpaces.data.length === 0 ? (
-										<TableRow>
-											<TableCell colSpan={6} className="text-center py-4">
-												No parking spaces found
-											</TableCell>
-										</TableRow>
-									) : (
-										parkingSpaces.data.map((parkingSpace) => (
-											<TableRow key={parkingSpace.id}>
-												<TableCell className="font-medium">
-													{parkingSpace.space_number}
-												</TableCell>
-												<TableCell>{parkingSpace.street.name}</TableCell>
-												<TableCell>
-													<Badge variant="outline">{getTypeLabel(parkingSpace.type)}</Badge>
-												</TableCell>
-												<TableCell>
-													{parkingSpace.is_active ? (
-														<Badge className="bg-green-500">Active</Badge>
-													) : (
-														<Badge variant="destructive">Inactive</Badge>
-													)}
-												</TableCell>
-												<TableCell>
-													{parkingSpace.is_handicap && (
-														<Badge className="mr-1 bg-blue-500">Handicap</Badge>
-													)}
-													{parkingSpace.is_loading_zone && (
-														<Badge className="bg-yellow-500">Loading</Badge>
-													)}
-												</TableCell>
-												<TableCell className="text-right">
-													<div className="flex justify-end gap-2">
-														<Button variant="outline" size="sm" asChild>
-															<Link href={route('parking-spaces.show', parkingSpace.id)}>
-																<Eye className="h-4 w-4" />
-															</Link>
-														</Button>
-														<Button variant="outline" size="sm" asChild>
-															<Link href={route('parking-spaces.edit', parkingSpace.id)}>
-																<Pencil className="h-4 w-4" />
-															</Link>
-														</Button>
-														<Button
-															variant="outline"
-															size="sm"
-															onClick={() => handleDelete(parkingSpace.id)}
-															disabled={processing === parkingSpace.id}
-														>
-															<Trash2 className="h-4 w-4" />
-														</Button>
-													</div>
-												</TableCell>
-											</TableRow>
-										))
-									)}
-								</TableBody>
-							</Table>
-							<div className="mt-4">
-								{/* Directly render pagination for testing */}
-								{parkingSpaces.links && parkingSpaces.links.length > 0 ? (
-									<Pagination>
-										<PaginationContent>
-											{/* Previous Page Link */}
-											<PaginationItem>
-												<PaginationPrevious 
-													href={parkingSpaces.links[0].url || '#'} 
-													className={!parkingSpaces.links[0].url ? 'pointer-events-none opacity-50' : ''}
-												/>
-											</PaginationItem>
-											
-											{/* Page Number Links */}
-											{parkingSpaces.links.slice(1, -1).map((link, i) => (
-												<PaginationItem key={i}>
-													<PaginationLink 
-														href={link.url || '#'} 
-														isActive={link.active}
-														className={!link.url ? 'pointer-events-none opacity-50' : ''}
-													>
-														{link.label.replace(/&laquo;|&raquo;/g, '')}
-													</PaginationLink>
-												</PaginationItem>
-											))}
-											
-											{/* Next Page Link */}
-											<PaginationItem>
-												<PaginationNext 
-													href={parkingSpaces.links[parkingSpaces.links.length - 1].url || '#'} 
-													className={!parkingSpaces.links[parkingSpaces.links.length - 1].url ? 'pointer-events-none opacity-50' : ''}
-												/>
-											</PaginationItem>
-										</PaginationContent>
-									</Pagination>
-								) : (
-									<div className="text-center text-gray-500">No pagination links available</div>
-								)}
-							</div>
-						</div>
+						<DataTable
+							columns={columns}
+							data={parkingSpaces.data}
+							searchKey="space_number"
+							searchPlaceholder="Filter parking spaces..."
+							createRoute={route('parking-spaces.create')}
+							createButtonLabel="Add Parking Space"
+							pagination={{
+								pageCount: parkingSpaces.last_page,
+								pageIndex: parkingSpaces.current_page - 1,
+								pageSize: parkingSpaces.data.length,
+								total: parkingSpaces.total,
+								from: parkingSpaces.from,
+								to: parkingSpaces.to,
+								links: parkingSpaces.links,
+								onPageChange: handlePageChange
+							}}
+							statusOptions={{
+								key: 'is_active',
+								options: [
+									{ label: 'All', value: null },
+									{ label: 'Active', value: 'Active' },
+									{ label: 'Inactive', value: 'Inactive' }
+								]
+							}}
+							emptyMessage="No parking spaces found"
+						/>
 					</div>
 				</div>
 			</div>

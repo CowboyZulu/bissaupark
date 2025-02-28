@@ -2,7 +2,7 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Icon } from '@/components/icon';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -11,7 +11,7 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Car, Folder, LayoutGrid, Map, Menu, ParkingSquare, Search, TriangleAlert, Users } from 'lucide-react';
+import { BookOpen, Car, Folder, LayoutGrid, Map, Menu, ParkingSquare, Search, TriangleAlert, Users, SquarePercent, Receipt, Lock, Truck } from 'lucide-react';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
@@ -65,6 +65,26 @@ const mainNavItems: NavItem[] = [
         title: 'Parking Spaces',
         url: '/parking-spaces',
         icon: ParkingSquare,
+    },
+    {
+        title: 'Parking Rates',
+        url: '/parking-rates',
+        icon: SquarePercent,
+    },
+    {
+        title: 'Fine Rates',
+        url: '/fine-rates',
+        icon: Receipt,
+    },
+    {
+        title: 'Clamping Rates',
+        url: '/clamping-rates',
+        icon: Lock,
+    },
+    {
+        title: 'Towing Rates',
+        url: '/towing-rates',
+        icon: Truck,
     },
 ];
 

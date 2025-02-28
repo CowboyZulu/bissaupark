@@ -13,6 +13,10 @@ use App\Http\Controllers\ViolationTypeController;
 use App\Http\Controllers\ZonesController;
 use App\Http\Controllers\StreetController;
 use App\Http\Controllers\ParkingSpaceController;
+use App\Http\Controllers\ParkingRateController;
+use App\Http\Controllers\FineRateController;
+use App\Http\Controllers\ClampingRateController;
+use App\Http\Controllers\TowingRateController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -56,6 +60,18 @@ Route::middleware(['auth'])->group(function () {
     
     // Parking Spaces Management Routes
     Route::resource('parking-spaces', ParkingSpaceController::class);
+    
+    // Parking Rates Management Routes
+    Route::resource('parking-rates', ParkingRateController::class);
+    
+    // Fine Rates Management Routes
+    Route::resource('fine-rates', FineRateController::class);
+    
+    // Clamping Rates Management Routes
+    Route::resource('clamping-rates', ClampingRateController::class);
+    
+    // Towing Rates Management Routes
+    Route::resource('towing-rates', TowingRateController::class);
 });
 
 require __DIR__.'/settings.php';

@@ -67,4 +67,59 @@ export interface Street {
     created_at: string;
     updated_at: string;
     zone?: Zone;
+}
+
+export interface ParkingRate {
+    id: number;
+    zone_id: number;
+    vehicle_category_id: number;
+    rate_type: 'hourly' | 'daily' | 'monthly';
+    amount: number;
+    start_time: string | null;
+    end_time: string | null;
+    is_weekend_rate: boolean;
+    is_holiday_rate: boolean;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+    zone?: Zone;
+    vehicleCategory?: VehicleCategory;
+}
+
+export interface FineRate {
+    id: number;
+    zone_id: number;
+    vehicle_category_id: number;
+    violation_type_id: number;
+    amount: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+    zone?: Zone;
+    vehicleCategory?: VehicleCategory;
+    violationType?: ViolationType;
+}
+
+export interface ClampingRate {
+    id: number;
+    vehicle_category_id: number;
+    amount: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+    vehicleCategory?: VehicleCategory;
+}
+
+export interface TowingRate {
+    id: number;
+    zone_id: number;
+    vehicle_category_id: number;
+    service_fee: number;
+    fine_amount: number;
+    daily_storage_fee: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+    zone?: Zone;
+    vehicleCategory?: VehicleCategory;
 } 

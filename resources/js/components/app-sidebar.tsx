@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Car, Folder, LayoutGrid, TriangleAlert, Users, Map, ParkingSquare } from 'lucide-react';
+import { BookOpen, Car, Folder, LayoutGrid, TriangleAlert, Users, Map, ParkingSquare, SquarePercent, User, Truck, Key, LandPlot, Receipt, Lock, Truck as TruckIcon } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -21,17 +21,17 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Roles',
         url: '/roles',
-        icon: Users,
+        icon: Key,
     },
     {
         title: 'Vehicle Categories',
         url: '/vehicle-categories',
-        icon: Users,
+        icon: Truck,
     },
     {
         title: 'Drivers',
         url: '/drivers',
-        icon: Car,
+        icon: User,
     },
     {
         title: 'Vehicles',
@@ -46,7 +46,7 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Zones',
         url: '/zones',
-        icon: Map,
+        icon: LandPlot,
     },
     {
         title: 'Streets',
@@ -57,6 +57,26 @@ const mainNavItems: NavItem[] = [
         title: 'Parking Spaces',
         url: '/parking-spaces',
         icon: ParkingSquare,
+    },
+    {
+        title: 'Parking Rates',
+        url: '/parking-rates',
+        icon: SquarePercent,
+    },
+    {
+        title: 'Fine Rates',
+        url: '/fine-rates',
+        icon: Receipt,
+    },
+    {
+        title: 'Clamping Rates',
+        url: '/clamping-rates',
+        icon: Lock,
+    },
+    {
+        title: 'Towing Rates',
+        url: '/towing-rates',
+        icon: TruckIcon,
     },
 ];
 

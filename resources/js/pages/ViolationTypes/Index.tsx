@@ -1,15 +1,23 @@
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type ViolationType } from '@/types/vehicle';
-import { Head, Link, router } from '@inertiajs/react';
-import { Edit, Plus, Trash } from 'lucide-react';
+import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { DataTable } from '@/components/ui/data-table';
+import { createViolationTypeColumns } from '@/utils/table-utils';
 
 interface Props {
-    violationTypes: ViolationType[];
+    violationTypes: {
+        data: ViolationType[];
+        links: any[];
+        from: number;
+        to: number;
+        total: number;
+        current_page: number;
+        last_page: number;
+    };
 }
 
 export default function Index({ violationTypes }: Props) {
@@ -59,6 +67,14 @@ export default function Index({ violationTypes }: Props) {
         });
     };
 
+    const isProcessing = (id: number) => processing === id;
+
+    const columns = createViolationTypeColumns(handleToggleStatus, handleDelete, isProcessing);
+
+    const handlePageChange = (page: number) => {
+        router.visit(route('violation-types.index', { page }));
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Violation Types" />
@@ -66,69 +82,37 @@ export default function Index({ violationTypes }: Props) {
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="flex justify-between items-center">
                     <h1 className="text-2xl font-semibold">Violation Types</h1>
-                    <Link href={route('violation-types.create')}>
-                        <Button className="flex items-center gap-1">
-                            <Plus className="h-4 w-4" />
-                            Add Violation Type
-                        </Button>
-                    </Link>
                 </div>
 
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative flex-1 rounded-xl border">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left text-sm">
-                            <thead className="bg-muted/50 text-muted-foreground border-b">
-                                <tr>
-                                    <th className="px-4 py-3 font-medium">Name</th>
-                                    <th className="px-4 py-3 font-medium">Code</th>
-                                    <th className="px-4 py-3 font-medium">Status</th>
-                                    <th className="px-4 py-3 font-medium text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {violationTypes.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={4} className="px-4 py-3 text-center text-muted-foreground">
-                                            No violation types found
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    violationTypes.map((violationType) => (
-                                        <tr key={violationType.id} className="border-b">
-                                            <td className="px-4 py-3">{violationType.name}</td>
-                                            <td className="px-4 py-3">
-                                                <code className="bg-muted rounded px-1 py-0.5">{violationType.code}</code>
-                                            </td>
-                                            <td className="px-4 py-3">
-                                                <Switch
-                                                    checked={violationType.is_active}
-                                                    onCheckedChange={() => handleToggleStatus(violationType)}
-                                                    disabled={processing === violationType.id}
-                                                />
-                                            </td>
-                                            <td className="px-4 py-3 text-right">
-                                                <div className="flex justify-end gap-2">
-                                                    <Link href={route('violation-types.edit', violationType.id)}>
-                                                        <Button variant="outline" size="icon" className="h-8 w-8">
-                                                            <Edit className="h-4 w-4" />
-                                                        </Button>
-                                                    </Link>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="icon"
-                                                        className="h-8 w-8 text-destructive"
-                                                        onClick={() => handleDelete(violationType.id)}
-                                                        disabled={processing === violationType.id}
-                                                    >
-                                                        <Trash className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
+                    <div className="p-4">
+                        <DataTable
+                            columns={columns}
+                            data={violationTypes.data}
+                            searchKey="name"
+                            searchPlaceholder="Filter violation types..."
+                            createRoute={route('violation-types.create')}
+                            createButtonLabel="Add Violation Type"
+                            pagination={{
+                                pageCount: violationTypes.last_page,
+                                pageIndex: violationTypes.current_page - 1,
+                                pageSize: violationTypes.data.length,
+                                total: violationTypes.total,
+                                from: violationTypes.from,
+                                to: violationTypes.to,
+                                links: violationTypes.links,
+                                onPageChange: handlePageChange
+                            }}
+                            statusOptions={{
+                                key: "is_active",
+                                options: [
+                                    { label: "All", value: null },
+                                    { label: "Active", value: "Active" },
+                                    { label: "Inactive", value: "Inactive" }
+                                ]
+                            }}
+                            emptyMessage="No violation types found"
+                        />
                     </div>
                 </div>
             </div>
