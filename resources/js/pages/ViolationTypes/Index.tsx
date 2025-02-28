@@ -75,6 +75,16 @@ export default function Index({ violationTypes }: Props) {
         router.visit(route('violation-types.index', { page }));
     };
 
+    // Ensure violationTypes.data exists before rendering the DataTable
+    const violationTypesData = violationTypes?.data || [];
+    const pageCount = violationTypes?.last_page || 1;
+    const pageIndex = (violationTypes?.current_page || 1) - 1;
+    const pageSize = violationTypesData.length;
+    const total = violationTypes?.total || 0;
+    const from = violationTypes?.from || 0;
+    const to = violationTypes?.to || 0;
+    const links = violationTypes?.links || [];
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Violation Types" />
@@ -88,19 +98,19 @@ export default function Index({ violationTypes }: Props) {
                     <div className="p-4">
                         <DataTable
                             columns={columns}
-                            data={violationTypes.data}
+                            data={violationTypesData}
                             searchKey="name"
                             searchPlaceholder="Filter violation types..."
                             createRoute={route('violation-types.create')}
                             createButtonLabel="Add Violation Type"
                             pagination={{
-                                pageCount: violationTypes.last_page,
-                                pageIndex: violationTypes.current_page - 1,
-                                pageSize: violationTypes.data.length,
-                                total: violationTypes.total,
-                                from: violationTypes.from,
-                                to: violationTypes.to,
-                                links: violationTypes.links,
+                                pageCount,
+                                pageIndex,
+                                pageSize,
+                                total,
+                                from,
+                                to,
+                                links,
                                 onPageChange: handlePageChange
                             }}
                             statusOptions={{

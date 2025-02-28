@@ -40,8 +40,8 @@ export default function Index({ users }: Props) {
                 },
                 onError: () => {
                     toast.error('Failed to delete user');
-                },
-            });
+        },
+    });
         }
     };
 
@@ -86,4 +86,4 @@ export default function Index({ users }: Props) {
             </div>
         </AppLayout>
     );
-} 
+}

@@ -52,6 +52,10 @@ class FineRateController extends Controller
 
         return Inertia::render('FineRates/Index', [
             'fineRates' => $query->paginate(10)->withQueryString(),
+            'zones' => Zones::all(),
+            'vehicleCategories' => VehicleCategory::all(),
+            'violationTypes' => ViolationType::all(),
+            'filters' => $request->only(['search', 'zone_id', 'vehicle_category_id', 'violation_type_id', 'is_active']),
         ]);
     }
 

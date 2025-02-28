@@ -76,6 +76,16 @@ export default function Index({ streets }: Props) {
         router.visit(route('streets.index', { page }));
     };
 
+    // Ensure streets.data exists before rendering the DataTable
+    const streetsData = streets?.data || [];
+    const pageCount = streets?.last_page || 1;
+    const pageIndex = (streets?.current_page || 1) - 1;
+    const pageSize = streetsData.length;
+    const total = streets?.total || 0;
+    const from = streets?.from || 0;
+    const to = streets?.to || 0;
+    const links = streets?.links || [];
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Streets" />
@@ -89,19 +99,19 @@ export default function Index({ streets }: Props) {
                     <div className="p-4">
                         <DataTable
                             columns={columns}
-                            data={streets.data}
+                            data={streetsData}
                             searchKey="name"
                             searchPlaceholder="Filter streets..."
                             createRoute={route('streets.create')}
                             createButtonLabel="Add Street"
                             pagination={{
-                                pageCount: streets.last_page,
-                                pageIndex: streets.current_page - 1,
-                                pageSize: streets.data.length,
-                                total: streets.total,
-                                from: streets.from,
-                                to: streets.to,
-                                links: streets.links,
+                                pageCount,
+                                pageIndex,
+                                pageSize,
+                                total,
+                                from,
+                                to,
+                                links,
                                 onPageChange: handlePageChange
                             }}
                             emptyMessage="No streets found"

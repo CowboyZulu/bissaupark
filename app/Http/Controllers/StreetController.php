@@ -13,12 +13,24 @@ class StreetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $streets = Street::with('zone')->get();
+        $query = Street::with('zone');
+        
+        // Apply search filter if provided
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('code', 'like', "%{$search}%");
+        }
+        
+        // Apply status filter if provided
+        if ($request->has('is_active')) {
+            $query->where('is_active', $request->input('is_active') === 'true');
+        }
         
         return Inertia::render('Streets/Index', [
-            'streets' => $streets,
+            'streets' => $query->paginate(10)->withQueryString(),
         ]);
     }
 

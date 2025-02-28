@@ -75,6 +75,16 @@ export default function Index({ zones }: Props) {
         router.visit(route('zones.index', { page }));
     };
 
+    // Ensure zones.data exists before rendering the DataTable
+    const zonesData = zones?.data || [];
+    const pageCount = zones?.last_page || 1;
+    const pageIndex = (zones?.current_page || 1) - 1;
+    const pageSize = zonesData.length;
+    const total = zones?.total || 0;
+    const from = zones?.from || 0;
+    const to = zones?.to || 0;
+    const links = zones?.links || [];
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Zones" />
@@ -88,19 +98,19 @@ export default function Index({ zones }: Props) {
                     <div className="p-4">
                         <DataTable
                             columns={columns}
-                            data={zones.data}
+                            data={zonesData}
                             searchKey="name"
                             searchPlaceholder="Filter zones..."
                             createRoute={route('zones.create')}
                             createButtonLabel="Add Zone"
                             pagination={{
-                                pageCount: zones.last_page,
-                                pageIndex: zones.current_page - 1,
-                                pageSize: zones.data.length,
-                                total: zones.total,
-                                from: zones.from,
-                                to: zones.to,
-                                links: zones.links,
+                                pageCount,
+                                pageIndex,
+                                pageSize,
+                                total,
+                                from,
+                                to,
+                                links,
                                 onPageChange: handlePageChange
                             }}
                             statusOptions={{

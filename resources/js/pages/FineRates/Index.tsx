@@ -7,18 +7,21 @@ import AppLayout from '@/layouts/app-layout';
 import { createFineRateColumns } from '@/utils/table-utils';
 import { toast } from 'sonner';
 import { BreadcrumbItem } from '@/types';
+import { FineRate, Zone, VehicleCategory, ViolationType } from '@/types/vehicle';
 
 interface FineRatesIndexProps {
 	fineRates: {
-		data: any[];
+		data: FineRate[];
 		links: any[];
 		from: number;
 		to: number;
 		total: number;
+		current_page: number;
+		last_page: number;
 	};
-	zones: any[];
-	vehicleCategories: any[];
-	violationTypes: any[];
+	zones: Zone[];
+	vehicleCategories: VehicleCategory[];
+	violationTypes: ViolationType[];
 	filters: {
 		search?: string;
 		zone_id?: number;
@@ -47,6 +50,10 @@ export default function Index({ fineRates, zones, vehicleCategories, violationTy
 	};
 
 	const columns = createFineRateColumns(handleDelete, isDeleting);
+
+	const handlePageChange = (page: number) => {
+		router.visit(route('fine-rates.index', { page }));
+	};
 
 	const breadcrumbs: BreadcrumbItem[] = [
 		{
@@ -78,20 +85,14 @@ export default function Index({ fineRates, zones, vehicleCategories, violationTy
 							createRoute={route('fine-rates.create')}
 							createButtonLabel="Create Fine Rate"
 							pagination={{
-								pageCount: fineRates.links.length - 2,
-								pageIndex: 0,
-								pageSize: 15,
+								pageCount: fineRates.last_page,
+								pageIndex: fineRates.current_page - 1,
+								pageSize: fineRates.data.length,
 								total: fineRates.total,
 								from: fineRates.from,
 								to: fineRates.to,
 								links: fineRates.links,
-								onPageChange: (page) => {
-									router.get(
-										route('fine-rates.index'),
-										{ page },
-										{ preserveState: true, preserveScroll: true }
-									);
-								}
+								onPageChange: handlePageChange
 							}}
 							statusOptions={{
 								key: 'is_active',

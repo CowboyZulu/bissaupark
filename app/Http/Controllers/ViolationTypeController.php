@@ -11,12 +11,24 @@ class ViolationTypeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $violationTypes = ViolationType::all();
+        $query = ViolationType::query();
+        
+        // Apply search filter if provided
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('code', 'like', "%{$search}%");
+        }
+        
+        // Apply status filter if provided
+        if ($request->has('is_active')) {
+            $query->where('is_active', $request->input('is_active') === 'true');
+        }
         
         return Inertia::render('ViolationTypes/Index', [
-            'violationTypes' => $violationTypes,
+            'violationTypes' => $query->paginate(10)->withQueryString(),
         ]);
     }
 
