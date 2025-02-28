@@ -124,9 +124,9 @@ export function createParkingRateColumns(
       cell: ({ row }: { row: any }) => createRelationNameCell("zone.name")({ row }),
     },
     {
-      accessorKey: "vehicleCategory.name",
+      accessorKey: "vehicle_category.name",
       header: createSortableHeader("Vehicle Category"),
-      cell: ({ row }: { row: any }) => createRelationNameCell("vehicleCategory.name")({ row }),
+      cell: ({ row }: { row: any }) => createRelationNameCell("vehicle_category.name")({ row }),
     },
     {
       accessorKey: "rate_type",
@@ -221,9 +221,9 @@ export function createTowingRateColumns(
       cell: ({ row }: { row: any }) => createRelationNameCell("zone.name")({ row }),
     },
     {
-      accessorKey: "vehicleCategory.name",
+      accessorKey: "vehicle_category.name",
       header: createSortableHeader("Vehicle Category"),
-      cell: ({ row }: { row: any }) => createRelationNameCell("vehicleCategory.name")({ row }),
+      cell: ({ row }: { row: any }) => createRelationNameCell("vehicle_category.name")({ row }),
     },
     {
       accessorKey: "service_fee",
@@ -275,14 +275,14 @@ export function createFineRateColumns(
       cell: ({ row }: { row: any }) => createRelationNameCell("zone.name")({ row }),
     },
     {
-      accessorKey: "vehicleCategory.name",
+      accessorKey: "vehicle_category.name",
       header: createSortableHeader("Vehicle Category"),
-      cell: ({ row }: { row: any }) => createRelationNameCell("vehicleCategory.name")({ row }),
+      cell: ({ row }: { row: any }) => createRelationNameCell("vehicle_category.name")({ row }),
     },
     {
-      accessorKey: "violationType.name",
+      accessorKey: "violation_type.name",
       header: createSortableHeader("Violation Type"),
-      cell: ({ row }: { row: any }) => createRelationNameCell("violationType.name")({ row }),
+      cell: ({ row }: { row: any }) => createRelationNameCell("violation_type.name")({ row }),
     },
     {
       accessorKey: "amount",
@@ -318,9 +318,9 @@ export function createClampingRateColumns(
 ): ColumnDef<any, any>[] {
   return [
     {
-      accessorKey: "vehicleCategory.name",
+      accessorKey: "vehicle_category.name",
       header: createSortableHeader("Vehicle Category"),
-      cell: ({ row }: { row: any }) => createRelationNameCell("vehicleCategory.name")({ row }),
+      cell: ({ row }: { row: any }) => createRelationNameCell("vehicle_category.name")({ row }),
     },
     {
       accessorKey: "amount",
