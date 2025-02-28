@@ -10,10 +10,10 @@ import { Role } from "@/types/user";
 import { Checkbox } from "@/components/ui/checkbox";
 import { type User } from '@/types/user';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { type Vehicle } from '@/types/vehicle';
 import { format } from 'date-fns';
 import { type Driver } from '@/types/vehicle';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 // Helper function to format currency
 export const formatCurrency = (amount: number, currency: string = "XOF") => {
@@ -81,18 +81,23 @@ export function createCurrencyCell(key: string, currency: string = "XOF") {
 
 // Create a relation name cell (e.g., zone.name, vehicleCategory.name)
 export function createRelationNameCell(path: string, fallback: string = "N/A") {
-  return ({ row }: { row: any }) => {
-    const parts = path.split(".");
-    let value = row.original;
-    
-    for (const part of parts) {
-      value = value?.[part];
-      if (value === undefined || value === null) {
-        return fallback;
+  return function RelationNameCell({ row }: { row: any }) {
+    try {
+      const parts = path.split(".");
+      let value = row.original;
+      
+      for (const part of parts) {
+        if (value === undefined || value === null) {
+          return <span>{fallback}</span>;
+        }
+        value = value[part];
       }
+      
+      return <span>{value || fallback}</span>;
+    } catch (error) {
+      console.error(`Error in createRelationNameCell for path ${path}:`, error);
+      return <span>{fallback}</span>;
     }
-    
-    return value;
   };
 }
 
@@ -116,17 +121,17 @@ export function createParkingRateColumns(
     {
       accessorKey: "zone.name",
       header: createSortableHeader("Zone"),
-      cell: createRelationNameCell("zone.name"),
+      cell: ({ row }: { row: any }) => createRelationNameCell("zone.name")({ row }),
     },
     {
       accessorKey: "vehicleCategory.name",
       header: createSortableHeader("Vehicle Category"),
-      cell: createRelationNameCell("vehicleCategory.name"),
+      cell: ({ row }: { row: any }) => createRelationNameCell("vehicleCategory.name")({ row }),
     },
     {
       accessorKey: "rate_type",
       header: createSortableHeader("Rate Type"),
-      cell: ({ row }) => {
+      cell: ({ row }: { row: any }) => {
         const rateType = row.getValue("rate_type");
         let label = "Unknown";
         
@@ -158,7 +163,7 @@ export function createParkingRateColumns(
     {
       accessorKey: "time_range",
       header: "Time Range",
-      cell: ({ row }) => {
+      cell: ({ row }: { row: any }) => {
         const rate = row.original;
         return rate.rate_type === "hourly" && rate.start_time && rate.end_time
           ? `${rate.start_time} - ${rate.end_time}`
@@ -192,7 +197,14 @@ export function createParkingRateColumns(
     {
       id: "actions",
       header: "Actions",
-      cell: createActionsCell("parking-rates.edit", handleDelete, isDeleting),
+      cell: ({ row }: { row: any }) => {
+        const item = row.original;
+        return createActionsCell<any>(
+          "parking-rates.edit",
+          handleDelete,
+          isDeleting
+        )({ row });
+      },
     },
   ];
 }
@@ -206,12 +218,12 @@ export function createTowingRateColumns(
     {
       accessorKey: "zone.name",
       header: createSortableHeader("Zone"),
-      cell: createRelationNameCell("zone.name"),
+      cell: ({ row }: { row: any }) => createRelationNameCell("zone.name")({ row }),
     },
     {
       accessorKey: "vehicleCategory.name",
       header: createSortableHeader("Vehicle Category"),
-      cell: createRelationNameCell("vehicleCategory.name"),
+      cell: ({ row }: { row: any }) => createRelationNameCell("vehicleCategory.name")({ row }),
     },
     {
       accessorKey: "service_fee",
@@ -239,7 +251,14 @@ export function createTowingRateColumns(
     {
       id: "actions",
       header: "Actions",
-      cell: createActionsCell("towing-rates.edit", handleDelete, isDeleting),
+      cell: ({ row }: { row: any }) => {
+        const item = row.original;
+        return createActionsCell<any>(
+          "towing-rates.edit",
+          handleDelete,
+          isDeleting
+        )({ row });
+      },
     },
   ];
 }
@@ -253,17 +272,17 @@ export function createFineRateColumns(
     {
       accessorKey: "zone.name",
       header: createSortableHeader("Zone"),
-      cell: createRelationNameCell("zone.name"),
+      cell: ({ row }: { row: any }) => createRelationNameCell("zone.name")({ row }),
     },
     {
       accessorKey: "vehicleCategory.name",
       header: createSortableHeader("Vehicle Category"),
-      cell: createRelationNameCell("vehicleCategory.name"),
+      cell: ({ row }: { row: any }) => createRelationNameCell("vehicleCategory.name")({ row }),
     },
     {
       accessorKey: "violationType.name",
       header: createSortableHeader("Violation Type"),
-      cell: createRelationNameCell("violationType.name"),
+      cell: ({ row }: { row: any }) => createRelationNameCell("violationType.name")({ row }),
     },
     {
       accessorKey: "amount",
@@ -281,7 +300,14 @@ export function createFineRateColumns(
     {
       id: "actions",
       header: "Actions",
-      cell: createActionsCell("fine-rates.edit", handleDelete, isDeleting),
+      cell: ({ row }: { row: any }) => {
+        const item = row.original;
+        return createActionsCell<any>(
+          "fine-rates.edit",
+          handleDelete,
+          isDeleting
+        )({ row });
+      },
     },
   ];
 }
@@ -294,7 +320,7 @@ export function createClampingRateColumns(
     {
       accessorKey: "vehicleCategory.name",
       header: createSortableHeader("Vehicle Category"),
-      cell: createRelationNameCell("vehicleCategory.name"),
+      cell: ({ row }: { row: any }) => createRelationNameCell("vehicleCategory.name")({ row }),
     },
     {
       accessorKey: "amount",
@@ -312,7 +338,14 @@ export function createClampingRateColumns(
     {
       id: "actions",
       header: "Actions",
-      cell: createActionsCell("clamping-rates.edit", handleDelete, isDeleting),
+      cell: ({ row }: { row: any }) => {
+        const item = row.original;
+        return createActionsCell<any>(
+          "clamping-rates.edit",
+          handleDelete,
+          isDeleting
+        )({ row });
+      },
     },
   ];
 }
@@ -324,17 +357,17 @@ export function createVehicleCategoryColumns(
     {
       accessorKey: "name",
       header: createSortableHeader("Name"),
-      cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+      cell: ({ row }: { row: any }) => <div className="capitalize">{row.getValue("name")}</div>,
     },
     {
       accessorKey: "description",
       header: createSortableHeader("Description"),
-      cell: ({ row }) => <div>{row.getValue("description") || "-"}</div>,
+      cell: ({ row }: { row: any }) => <div>{row.getValue("description") || "-"}</div>,
     },
     {
       id: "actions",
       header: "Actions",
-      cell: ({ row }) => {
+      cell: ({ row }: { row: any }) => {
         const category = row.original;
         return (
           <div className="flex items-center gap-2">
@@ -386,8 +419,8 @@ export function createStreetColumns(
         },
         {
             accessorKey: "zone.name",
-            header: createSortableHeader("Zone"),
-            cell: ({ row }: { row: any }) => createRelationNameCell(row.original, "zone"),
+            header: "Zone",
+            cell: ({ row }: { row: any }) => createRelationNameCell("zone.name")({ row }),
         },
         {
             accessorKey: "is_active",
@@ -482,11 +515,11 @@ export function createRoleColumns(
             header: 'Actions',
             cell: ({ row }: { row: any }) => {
                 const role = row.original as Role;
-                return createActionsCell(
-                    route('roles.edit', role.id),
-                    () => onDelete(role.id),
+                return createActionsCell<Role>(
+                    "roles.edit",
+                    onDelete,
                     false
-                );
+                )({ row });
             },
         },
     ];
